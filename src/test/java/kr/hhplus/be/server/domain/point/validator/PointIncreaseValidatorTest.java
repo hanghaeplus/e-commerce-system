@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.util.Random;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -31,11 +33,12 @@ class PointIncreaseValidatorTest {
         @CsvSource(textBlock = """
                 INCREASE | true
                 DECREASE | false
-                         | false
                 """, delimiter = '|')
         void success(PointValidationContext.ActionType actionType, boolean expected) {
             // given
-            PointValidationContext context = PointValidationContext.builder()
+            PointValidationContext context = ImmutablePointValidationContext.builder()
+                    .balance(new Random().nextLong(0, Long.MAX_VALUE))
+                    .amount(new Random().nextLong(0, Long.MAX_VALUE))
                     .actionType(actionType)
                     .build();
 
@@ -57,8 +60,11 @@ class PointIncreaseValidatorTest {
         @ValueSource(longs = {1, 1000, 5000, 10000})
         void success(long amount) {
             // given
-            PointValidationContext context = PointValidationContext.builder()
+            long balance = new Random().nextLong(0, Long.MAX_VALUE);
+            PointValidationContext context = ImmutablePointValidationContext.builder()
+                    .balance(balance)
                     .amount(amount)
+                    .actionType(PointValidationContext.ActionType.INCREASE)
                     .build();
 
             // when & then
@@ -70,8 +76,11 @@ class PointIncreaseValidatorTest {
         @ValueSource(longs = {-10000, -5000, -1000, -1, 0})
         void fail1(long amount) {
             // given
-            PointValidationContext context = PointValidationContext.builder()
+            long balance = new Random().nextLong(0, Long.MAX_VALUE);
+            PointValidationContext context = ImmutablePointValidationContext.builder()
+                    .balance(balance)
                     .amount(amount)
+                    .actionType(PointValidationContext.ActionType.INCREASE)
                     .build();
 
             // when & then

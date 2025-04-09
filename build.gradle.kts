@@ -46,6 +46,12 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 
+    // Immutables
+    compileOnly(libs.immutables)
+    annotationProcessor(libs.immutables)
+    testCompileOnly(libs.immutables)
+    testAnnotationProcessor(libs.immutables)
+
     // DB
     runtimeOnly("com.mysql:mysql-connector-j")
 

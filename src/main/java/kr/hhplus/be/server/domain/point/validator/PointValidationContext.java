@@ -1,17 +1,17 @@
 package kr.hhplus.be.server.domain.point.validator;
 
-import lombok.Builder;
-import lombok.Getter;
+import org.immutables.value.Value;
 
-@Getter
-@Builder
-public class PointValidationContext {
+@Value.Immutable
+public interface PointValidationContext {
 
-    private final Long balance;
-    private final Long amount;
-    private final ActionType actionType;
+    Long getBalance();
 
-    public enum ActionType {
+    Long getAmount();
+
+    ActionType getActionType();
+
+    enum ActionType {
         INCREASE, DECREASE
     }
 

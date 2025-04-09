@@ -26,11 +26,7 @@ public class PointService {
         Long amount = command.getAmount();
         Point point = pointRepository.findPointByUserId(userId).orElseThrow();
 
-        PointValidationContext context = PointValidationContext.builder()
-                .balance(point.getBalance())
-                .amount(amount)
-                .actionType(PointValidationContext.ActionType.INCREASE)
-                .build();
+        PointValidationContext context = PointMapper.toIncreaseContext(command, point.getBalance());
         pointValidators.validate(context);
 
         point.increase(amount);
@@ -52,11 +48,7 @@ public class PointService {
         Long amount = command.getAmount();
         Point point = pointRepository.findPointByUserId(userId).orElseThrow();
 
-        PointValidationContext context = PointValidationContext.builder()
-                .balance(point.getBalance())
-                .amount(amount)
-                .actionType(PointValidationContext.ActionType.DECREASE)
-                .build();
+        PointValidationContext context = PointMapper.toDecreaseContext(command, point.getBalance());
         pointValidators.validate(context);
 
         point.decrease(amount);
