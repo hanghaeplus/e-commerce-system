@@ -1,0 +1,20 @@
+[versions]
+spring_boot = "3.4.1"
+spring_io_dependency_management = "1.1.7"
+
+#lombok = "1.18.38"
+immutables = "2.10.1"
+mapstruct = "1.6.3"
+
+[plugins]
+spring_boot = { id = "org.springframework.boot", version.ref = "spring_boot" }
+spring_dependency_management = { id = "io.spring.dependency-management", version.ref = "spring_io_dependency_management" }
+
+[libraries]
+#lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+immutables = { module = "org.immutables:value", version.ref = "immutables" }
+#immutables = { module = "org.immutables:value-annotations", version.ref = "immutables" }
+mapstruct_client = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct_processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+
+[bundles]
