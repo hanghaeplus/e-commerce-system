@@ -1,9 +1,8 @@
 package kr.hhplus.be.server.domain.point.validator;
 
-import org.springframework.stereotype.Component;
-
 import kr.hhplus.be.server.common.exception.BusinessError;
 import kr.hhplus.be.server.common.exception.BusinessException;
+import org.springframework.stereotype.Component;
 
 @Component
 class PointDecreaseValidator implements PointValidator {

@@ -1,9 +1,6 @@
 package kr.hhplus.be.server.domain.point;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
+import kr.hhplus.be.server.domain.point.validator.PointValidators;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,9 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import kr.hhplus.be.server.domain.point.validator.PointValidators;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
 @MockitoSettings
@@ -28,6 +28,8 @@ class PointServiceTest {
     private PointRepository pointRepository;
     @Mock
     private PointValidators pointValidators;
+
+    // -------------------------------------------------------------------------------------------------
 
     @DisplayName("포인트를 조회할 때")
     @Nested
