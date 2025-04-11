@@ -36,7 +36,7 @@ class PointIncreaseValidatorTest {
                 """, delimiter = '|')
         void success(PointValidationContext.ActionType actionType, boolean expected) {
             // given
-            PointValidationContext context = ImmutablePointValidationContext.builder()
+            PointValidationContext context = _ImmutablePointValidationContext.builder()
                     .balance(new Random().nextLong(0, Long.MAX_VALUE))
                     .amount(new Random().nextLong(0, Long.MAX_VALUE))
                     .actionType(actionType)
@@ -61,7 +61,7 @@ class PointIncreaseValidatorTest {
         void success(long amount) {
             // given
             long balance = new Random().nextLong(0, Long.MAX_VALUE);
-            PointValidationContext context = ImmutablePointValidationContext.builder()
+            PointValidationContext context = _ImmutablePointValidationContext.builder()
                     .balance(balance)
                     .amount(amount)
                     .actionType(PointValidationContext.ActionType.INCREASE)
@@ -77,7 +77,7 @@ class PointIncreaseValidatorTest {
         void fail1(long amount) {
             // given
             long balance = new Random().nextLong(0, Long.MAX_VALUE);
-            PointValidationContext context = ImmutablePointValidationContext.builder()
+            PointValidationContext context = _ImmutablePointValidationContext.builder()
                     .balance(balance)
                     .amount(amount)
                     .actionType(PointValidationContext.ActionType.INCREASE)

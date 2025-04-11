@@ -2,7 +2,8 @@ package kr.hhplus.be.server.domain.point.validator;
 
 import org.immutables.value.Value;
 
-@Value.Immutable
+@Value.Style(typeImmutable = "_Immutable*")
+@Value.Immutable(copy = false)
 public interface PointValidationContext {
 
     Long getBalance();

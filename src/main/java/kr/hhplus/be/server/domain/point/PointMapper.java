@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.domain.point;
 
-import kr.hhplus.be.server.domain.point.validator.ImmutablePointValidationContext;
+import kr.hhplus.be.server.domain.point.validator._ImmutablePointValidationContext;
 import kr.hhplus.be.server.domain.point.validator.PointValidationContext;
 
 public class PointMapper {
 
     public static PointValidationContext toIncreaseContext(PointCommand.Increase command, long balance) {
-        return ImmutablePointValidationContext.builder()
+        return _ImmutablePointValidationContext.builder()
                 .balance(balance)
                 .amount(command.getAmount())
                 .actionType(PointValidationContext.ActionType.INCREASE)
@@ -14,7 +14,7 @@ public class PointMapper {
     }
 
     public static PointValidationContext toDecreaseContext(PointCommand.Decrease command, long balance) {
-        return ImmutablePointValidationContext.builder()
+        return _ImmutablePointValidationContext.builder()
                 .balance(balance)
                 .amount(command.getAmount())
                 .actionType(PointValidationContext.ActionType.DECREASE)
