@@ -67,6 +67,9 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Test Fixture
+    testImplementation(libs.fixtureMonkey)
 }
 
 tasks.withType<Test> {

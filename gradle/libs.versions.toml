@@ -6,6 +6,9 @@ spring_io_dependency_management = "1.1.7"
 # JPA
 querydsl = "6.11"
 
+# Test
+fixture_monkey = "1.1.10"
+
 # Annotation Processors
 lombok = "1.18.38"
 immutables = "2.10.1"
@@ -20,6 +23,9 @@ spring_dependency_management = { id = "io.spring.dependency-management", version
 # JPA
 querydsl_jpa = { group = "io.github.openfeign.querydsl", name = "querydsl-jpa", version.ref = "querydsl" }
 querydsl_apt = { group = "io.github.openfeign.querydsl", name = "querydsl-apt", version.ref = "querydsl" }
+
+# Test
+fixtureMonkey = { group = "com.navercorp.fixturemonkey", name = "fixture-monkey-starter", version.ref = "fixture_monkey" }
 
 # Annotation Processors
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
