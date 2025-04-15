@@ -9,13 +9,15 @@ import org.springframework.http.HttpStatusCode;
 @RequiredArgsConstructor
 public enum BusinessError {
 
-    POINT_INCREASE_INVALID_AMOUNT("invalid_increase_point_amount", HttpStatus.BAD_REQUEST),
-    POINT_DECREASE_INVALID_AMOUNT("invalid_decrease_point_amount", HttpStatus.BAD_REQUEST),
-    POINT_NOT_ENOUGH_BALANCE("not_enough_balance", HttpStatus.BAD_REQUEST),
-
+    POINT_INCREASE_INVALID_AMOUNT(HttpStatus.BAD_REQUEST,
+            "올바르지 않은 값으로 포인트를 증가할 수 없습니다."),
+    POINT_DECREASE_INVALID_AMOUNT(HttpStatus.BAD_REQUEST,
+            "올바르지 않은 값으로 포인트를 감소할 수 없습니다."),
+    POINT_NOT_ENOUGH_BALANCE(HttpStatus.BAD_REQUEST,
+            "포인트가 충분하지 않습니다."),
     ;
 
-    private final String message;
     private final HttpStatusCode status;
+    private final String message;
 
 }
