@@ -20,8 +20,8 @@ public class ObjectMother {
     static {
         fixtureMonkey = FixtureMonkey.builder()
                 .objectIntrospector(new FailoverIntrospector(List.of(
-                        BuilderArbitraryIntrospector.INSTANCE,
-                        FieldReflectionArbitraryIntrospector.INSTANCE
+                        FieldReflectionArbitraryIntrospector.INSTANCE,
+                        BuilderArbitraryIntrospector.INSTANCE
                 )))
                 .defaultNotNull(true)
                 .build();

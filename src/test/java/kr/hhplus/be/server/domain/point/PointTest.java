@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.domain.point;
 
+import kr.hhplus.be.server.common.exception.BusinessException;
+import kr.hhplus.be.server.test.util.ObjectMother;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import kr.hhplus.be.server.common.exception.BusinessException;
-import kr.hhplus.be.server.test.util.ObjectMother;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PointTest {
 
