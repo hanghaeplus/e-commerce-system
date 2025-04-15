@@ -52,6 +52,12 @@ dependencies {
     testCompileOnly(libs.immutables)
     testAnnotationProcessor(libs.immutables)
 
+    // Querydsl
+    implementation(libs.querydsl.jpa)
+    annotationProcessor(libs.querydsl.apt)
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
     // DB
     runtimeOnly("com.mysql:mysql-connector-j")
 
