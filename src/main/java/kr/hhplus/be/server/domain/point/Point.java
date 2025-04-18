@@ -21,7 +21,7 @@ public class Point extends AuditableEntity {
      * 아이디
      */
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "point_id", nullable = false, updatable = false)
     private Long id;
 
     /**

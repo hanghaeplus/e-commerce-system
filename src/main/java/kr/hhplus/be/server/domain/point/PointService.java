@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,18 +14,18 @@ public class PointService {
     private final PointRepository pointRepository;
 
     @Transactional(readOnly = true)
-    public Point getPoint(Long userId) {
-        return pointRepository.findPointByUserId(userId).orElseThrow();
+    public Optional<Point> findPoint(Long userId) {
+        return pointRepository.findPointByUserId(userId);
     }
 
     @Transactional(readOnly = true)
-    public List<PointHistory> getPointHistories(Long userId) {
+    public List<PointHistory> findPointHistories(Long userId) {
         return pointRepository.findPointHistoriesByUserId(userId);
     }
 
     @Transactional
     public Point increase(PointCommand.Increase command) {
-        Point point = getPoint(command.getUserId());
+        Point point = findPoint(command.getUserId()).orElseThrow();
 
         Long amount = command.getAmount();
         point.increase(amount);
@@ -42,7 +43,7 @@ public class PointService {
 
     @Transactional
     public Point decrease(PointCommand.Decrease command) {
-        Point point = getPoint(command.getUserId());
+        Point point = findPoint(command.getUserId()).orElseThrow();
 
         Long amount = command.getAmount();
         point.decrease(amount);

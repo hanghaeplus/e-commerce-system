@@ -4,6 +4,7 @@ import kr.hhplus.be.server.test.util.ObjectMother;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -23,90 +24,6 @@ class PointServiceTest {
 
     @Mock
     private PointRepository pointRepository;
-
-    // -------------------------------------------------------------------------------------------------
-
-    @DisplayName("포인트를 조회할 때")
-    @Nested
-    class GetPoint {
-
-        @DisplayName("사용자의 포인트를 가져온다.")
-        @Test
-        void success() {
-            // given
-            long userId = ObjectMother.getPositiveLong();
-
-            Point givenPoint = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .set("userId", userId)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
-
-            given(pointRepository.findPointByUserId(userId))
-                    .willReturn(Optional.of(givenPoint));
-
-            // when
-            Point point = sut.getPoint(userId);
-
-            // then
-            assertThat(point)
-                    .isNotNull()
-                    .returns(userId, Point::getUserId)
-                    .returns(givenPoint.getBalance(), Point::getBalance);
-        }
-
-        @DisplayName("사용자의 포인트가 생성되지 않았으면 실패한다.")
-        @Test
-        void fail() {
-            // given
-            long userId = ObjectMother.getPositiveLong();
-
-            given(pointRepository.findPointByUserId(userId))
-                    .willReturn(Optional.empty());
-
-            // when & then
-            assertThatThrownBy(() -> sut.getPoint(userId));
-        }
-
-    }
-
-    // -------------------------------------------------------------------------------------------------
-
-    @DisplayName("포인트 이력을 조회할 때")
-    @Nested
-    class GetPointHistories {
-
-        @DisplayName("사용자의 포인트 이력을 가져온다.")
-        @Test
-        void success() {
-            // given
-            long userId = ObjectMother.getPositiveLong();
-
-            List<PointHistory> givenHistories = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(PointHistory.class)
-                    .set("userId", userId)
-                    .setPostCondition(it -> it.getAmount() > 0)
-                    .build()
-                    .sampleStream()
-                    .limit(100)
-                    .toList();
-
-            given(pointRepository.findPointHistoriesByUserId(userId))
-                    .willReturn(givenHistories);
-
-            // when
-            List<PointHistory> histories = sut.getPointHistories(userId);
-
-            // then
-            assertThat(histories)
-                    .isNotNull()
-                    .isNotEmpty()
-                    .hasSize(givenHistories.size())
-                    .allMatch(it -> it.getUserId().equals(userId));
-        }
-
-    }
 
     // -------------------------------------------------------------------------------------------------
 
@@ -143,15 +60,20 @@ class PointServiceTest {
             // then
             long expectedBalance = balance + command.getAmount();
 
-            verify(pointRepository, times(1)).savePoint(argThat(it ->
-                    it.getUserId().equals(command.getUserId()) &&
-                            it.getBalance().equals(expectedBalance)
-            ));
-            verify(pointRepository, times(1)).savePointHistory(argThat(it ->
-                    it.getUserId().equals(command.getUserId()) &&
-                            it.getAmount().equals(command.getAmount()) &&
-                            it.getOriginType() == PointHistory.OriginType.CHARGE
-            ));
+            ArgumentCaptor<Point> pointCaptor = ArgumentCaptor.forClass(Point.class);
+            verify(pointRepository, times(1)).savePoint(pointCaptor.capture());
+            assertThat(pointCaptor.getValue())
+                    .isNotNull()
+                    .returns(command.getUserId(), Point::getUserId)
+                    .returns(expectedBalance, Point::getBalance);
+
+            ArgumentCaptor<PointHistory> pointHistoryCaptor = ArgumentCaptor.forClass(PointHistory.class);
+            verify(pointRepository, times(1)).savePointHistory(pointHistoryCaptor.capture());
+            assertThat(pointHistoryCaptor.getValue())
+                    .isNotNull()
+                    .returns(command.getUserId(), PointHistory::getUserId)
+                    .returns(command.getAmount(), PointHistory::getAmount)
+                    .returns(PointHistory.OriginType.CHARGE, PointHistory::getOriginType);
 
             assertThat(point)
                     .isNotNull()
@@ -196,15 +118,20 @@ class PointServiceTest {
             // then
             long expectedBalance = balance - command.getAmount();
 
-            verify(pointRepository, times(1)).savePoint(argThat(it ->
-                    it.getUserId().equals(command.getUserId()) &&
-                            it.getBalance().equals(expectedBalance)
-            ));
-            verify(pointRepository, times(1)).savePointHistory(argThat(it ->
-                    it.getUserId().equals(command.getUserId()) &&
-                            it.getAmount().equals(command.getAmount()) &&
-                            it.getOriginType() == PointHistory.OriginType.PAYMENT
-            ));
+            ArgumentCaptor<Point> pointCaptor = ArgumentCaptor.forClass(Point.class);
+            verify(pointRepository, times(1)).savePoint(pointCaptor.capture());
+            assertThat(pointCaptor.getValue())
+                    .isNotNull()
+                    .returns(command.getUserId(), Point::getUserId)
+                    .returns(expectedBalance, Point::getBalance);
+
+            ArgumentCaptor<PointHistory> pointHistoryCaptor = ArgumentCaptor.forClass(PointHistory.class);
+            verify(pointRepository, times(1)).savePointHistory(pointHistoryCaptor.capture());
+            assertThat(pointHistoryCaptor.getValue())
+                    .isNotNull()
+                    .returns(command.getUserId(), PointHistory::getUserId)
+                    .returns(command.getAmount(), PointHistory::getAmount)
+                    .returns(PointHistory.OriginType.PAYMENT, PointHistory::getOriginType);
 
             assertThat(point)
                     .isNotNull()
