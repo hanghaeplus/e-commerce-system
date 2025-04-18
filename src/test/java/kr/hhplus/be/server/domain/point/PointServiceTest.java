@@ -34,26 +34,25 @@ class PointServiceTest {
         @Test
         void success() {
             // given
-            PointCommand.Point command = ObjectMother.getFixtureMonkey()
-                    .giveMeOne(PointCommand.Point.class);
+            long userId = ObjectMother.getPositiveLong();
 
             Point givenPoint = ObjectMother.getFixtureMonkey()
                     .giveMeBuilder(Point.class)
-                    .set("userId", command.getUserId())
+                    .set("userId", userId)
                     .setPostCondition(it -> it.getBalance() >= 0)
                     .build()
                     .sample();
 
-            given(pointRepository.findPointByUserId(command.getUserId()))
+            given(pointRepository.findPointByUserId(userId))
                     .willReturn(Optional.of(givenPoint));
 
             // when
-            Point point = sut.getPoint(command);
+            Point point = sut.getPoint(userId);
 
             // then
             assertThat(point)
                     .isNotNull()
-                    .returns(command.getUserId(), Point::getUserId)
+                    .returns(userId, Point::getUserId)
                     .returns(givenPoint.getBalance(), Point::getBalance);
         }
 
@@ -61,14 +60,13 @@ class PointServiceTest {
         @Test
         void fail() {
             // given
-            PointCommand.Point command = ObjectMother.getFixtureMonkey()
-                    .giveMeOne(PointCommand.Point.class);
+            long userId = ObjectMother.getPositiveLong();
 
-            given(pointRepository.findPointByUserId(command.getUserId()))
+            given(pointRepository.findPointByUserId(userId))
                     .willReturn(Optional.empty());
 
             // when & then
-            assertThatThrownBy(() -> sut.getPoint(command));
+            assertThatThrownBy(() -> sut.getPoint(userId));
         }
 
     }
@@ -83,30 +81,29 @@ class PointServiceTest {
         @Test
         void success() {
             // given
-            PointCommand.History command = ObjectMother.getFixtureMonkey()
-                    .giveMeOne(PointCommand.History.class);
+            long userId = ObjectMother.getPositiveLong();
 
             List<PointHistory> givenHistories = ObjectMother.getFixtureMonkey()
                     .giveMeBuilder(PointHistory.class)
-                    .set("userId", command.getUserId())
+                    .set("userId", userId)
                     .setPostCondition(it -> it.getAmount() > 0)
                     .build()
                     .sampleStream()
                     .limit(100)
                     .toList();
 
-            given(pointRepository.findPointHistoriesByUserId(command.getUserId()))
+            given(pointRepository.findPointHistoriesByUserId(userId))
                     .willReturn(givenHistories);
 
             // when
-            List<PointHistory> histories = sut.getPointHistories(command);
+            List<PointHistory> histories = sut.getPointHistories(userId);
 
             // then
             assertThat(histories)
                     .isNotNull()
                     .isNotEmpty()
                     .hasSize(givenHistories.size())
-                    .allMatch(it -> it.getUserId().equals(command.getUserId()));
+                    .allMatch(it -> it.getUserId().equals(userId));
         }
 
     }
@@ -144,10 +141,18 @@ class PointServiceTest {
             Point point = sut.increase(command);
 
             // then
-            verify(pointRepository, times(1)).savePoint(any());
-            verify(pointRepository, times(1)).savePointHistory(any());
-
             long expectedBalance = balance + command.getAmount();
+
+            verify(pointRepository, times(1)).savePoint(argThat(it ->
+                    it.getUserId().equals(command.getUserId()) &&
+                            it.getBalance().equals(expectedBalance)
+            ));
+            verify(pointRepository, times(1)).savePointHistory(argThat(it ->
+                    it.getUserId().equals(command.getUserId()) &&
+                            it.getAmount().equals(command.getAmount()) &&
+                            it.getOriginType() == PointHistory.OriginType.CHARGE
+            ));
+
             assertThat(point)
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)
@@ -189,10 +194,18 @@ class PointServiceTest {
             Point point = sut.decrease(command);
 
             // then
-            verify(pointRepository, times(1)).savePoint(any());
-            verify(pointRepository, times(1)).savePointHistory(any());
-
             long expectedBalance = balance - command.getAmount();
+
+            verify(pointRepository, times(1)).savePoint(argThat(it ->
+                    it.getUserId().equals(command.getUserId()) &&
+                            it.getBalance().equals(expectedBalance)
+            ));
+            verify(pointRepository, times(1)).savePointHistory(argThat(it ->
+                    it.getUserId().equals(command.getUserId()) &&
+                            it.getAmount().equals(command.getAmount()) &&
+                            it.getOriginType() == PointHistory.OriginType.PAYMENT
+            ));
+
             assertThat(point)
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)

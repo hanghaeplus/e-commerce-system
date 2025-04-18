@@ -8,24 +8,6 @@ public final class PointCommand {
     @Getter
     @Builder
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Point {
-
-        private final Long userId;
-
-    }
-
-    @Getter
-    @Builder
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class History {
-
-        private final Long userId;
-
-    }
-
-    @Getter
-    @Builder
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Increase {
 
         private final Long userId;

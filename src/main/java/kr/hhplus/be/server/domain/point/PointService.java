@@ -13,27 +13,25 @@ public class PointService {
     private final PointRepository pointRepository;
 
     @Transactional(readOnly = true)
-    public Point getPoint(PointCommand.Point command) {
-        return pointRepository.findPointByUserId(command.getUserId()).orElseThrow();
+    public Point getPoint(Long userId) {
+        return pointRepository.findPointByUserId(userId).orElseThrow();
     }
 
     @Transactional(readOnly = true)
-    public List<PointHistory> getPointHistories(PointCommand.History command) {
-        return pointRepository.findPointHistoriesByUserId(command.getUserId());
+    public List<PointHistory> getPointHistories(Long userId) {
+        return pointRepository.findPointHistoriesByUserId(userId);
     }
 
     @Transactional
     public Point increase(PointCommand.Increase command) {
-        Long userId = command.getUserId();
+        Point point = getPoint(command.getUserId());
+
         Long amount = command.getAmount();
-
-        Point point = pointRepository.findPointByUserId(userId).orElseThrow();
-
         point.increase(amount);
         pointRepository.savePoint(point);
 
         PointHistory history = PointHistory.builder()
-                .userId(userId)
+                .userId(point.getUserId())
                 .amount(amount)
                 .originType(command.getOriginType())
                 .build();
@@ -44,16 +42,14 @@ public class PointService {
 
     @Transactional
     public Point decrease(PointCommand.Decrease command) {
-        Long userId = command.getUserId();
+        Point point = getPoint(command.getUserId());
+
         Long amount = command.getAmount();
-
-        Point point = pointRepository.findPointByUserId(userId).orElseThrow();
-
         point.decrease(amount);
         pointRepository.savePoint(point);
 
         PointHistory history = PointHistory.builder()
-                .userId(userId)
+                .userId(point.getUserId())
                 .amount(amount)
                 .originType(command.getOriginType())
                 .build();
