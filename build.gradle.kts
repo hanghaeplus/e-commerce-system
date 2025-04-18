@@ -54,7 +54,11 @@ dependencies {
 
     // Querydsl
     implementation(libs.querydsl.jpa)
-    annotationProcessor(libs.querydsl.apt)
+    annotationProcessor(libs.querydsl.apt) {
+        artifact {
+            classifier = "jpa"
+        }
+    }
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
