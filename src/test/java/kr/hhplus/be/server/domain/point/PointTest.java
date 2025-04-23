@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.domain.point;
 
 import kr.hhplus.be.server.common.exception.BusinessException;
-import kr.hhplus.be.server.test.util.ObjectMother;
+import kr.hhplus.be.server.test.fixture.Fixtures;
+import kr.hhplus.be.server.test.fixture.point.PointAmountScenario;
+import net.jqwik.api.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,13 +20,9 @@ class PointTest {
         @Test
         void success() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
-
-            long amount = ObjectMother.getPositiveLong();
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.SUCCESS_ON_INCREASE);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             point.increase(amount);
@@ -34,13 +32,9 @@ class PointTest {
         @Test
         void fail1() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
-
-            long amount = 0L;
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.FAIL_ON_ZERO_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             assertThatThrownBy(() -> point.increase(amount))
@@ -51,13 +45,9 @@ class PointTest {
         @Test
         void fail2() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
-
-            long amount = ObjectMother.getNegativeLong();
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.FAIL_ON_NEGATIVE_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             assertThatThrownBy(() -> point.increase(amount))
@@ -76,13 +66,9 @@ class PointTest {
         @Test
         void success1() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() > 1)
-                    .build()
-                    .sample();
-
-            long amount = point.getBalance() - 1;
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.SUCCESS_ON_DECREASE_BY_LESS_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             point.decrease(amount);
@@ -92,29 +78,34 @@ class PointTest {
         @Test
         void success2() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() > 0)
-                    .build()
-                    .sample();
-
-            long amount = point.getBalance();
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.SUCCESS_ON_DECREASE_BY_SAME_BALANCE);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             point.decrease(amount);
         }
 
-        @DisplayName("감소분이 0이하면 실패한다.")
+        @DisplayName("감소분이 0이면 실패한다.")
         @Test
         void fail1() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.FAIL_ON_ZERO_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
-            long amount = 0L;
+            // when & then
+            assertThatThrownBy(() -> point.decrease(amount))
+                    .isInstanceOf(BusinessException.class);
+        }
+
+        @DisplayName("감소분이 음수면 실패한다.")
+        @Test
+        void fail2() {
+            // given
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.FAIL_ON_NEGATIVE_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             assertThatThrownBy(() -> point.decrease(amount))
@@ -123,15 +114,11 @@ class PointTest {
 
         @DisplayName("잔액이 감소분보다 작으면 실패한다.")
         @Test
-        void fail2() {
+        void fail3() {
             // given
-            Point point = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getBalance() >= 0)
-                    .build()
-                    .sample();
-
-            long amount = point.getBalance() + 1;
+            Tuple.Tuple2<Point, Long> tuple = Fixtures.on(PointAmountScenario.FAIL_ON_DECREASE_BY_GREATER_AMOUNT);
+            Point point = tuple.get1();
+            Long amount = tuple.get2();
 
             // when & then
             assertThatThrownBy(() -> point.decrease(amount))

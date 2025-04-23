@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,25 +13,27 @@ public class PointService {
     private final PointRepository pointRepository;
 
     @Transactional(readOnly = true)
-    public Optional<Point> findPoint(Long userId) {
-        return pointRepository.findPointByUserId(userId);
+    public Point getPoint(Long userId) {
+        return pointRepository.findPointByUserId(userId).orElseThrow();
     }
 
     @Transactional(readOnly = true)
-    public List<PointHistory> findPointHistories(Long userId) {
+    public List<PointHistory> getPointHistories(Long userId) {
         return pointRepository.findPointHistoriesByUserId(userId);
     }
 
     @Transactional
     public Point increase(PointCommand.Increase command) {
-        Point point = findPoint(command.getUserId()).orElseThrow();
-
+        Long userId = command.getUserId();
         Long amount = command.getAmount();
+
+        Point point = pointRepository.findPointByUserId(userId).orElseThrow();
+
         point.increase(amount);
         pointRepository.savePoint(point);
 
         PointHistory history = PointHistory.builder()
-                .userId(point.getUserId())
+                .userId(userId)
                 .amount(amount)
                 .originType(command.getOriginType())
                 .build();
@@ -43,14 +44,16 @@ public class PointService {
 
     @Transactional
     public Point decrease(PointCommand.Decrease command) {
-        Point point = findPoint(command.getUserId()).orElseThrow();
-
+        Long userId = command.getUserId();
         Long amount = command.getAmount();
+
+        Point point = pointRepository.findPointByUserId(userId).orElseThrow();
+
         point.decrease(amount);
         pointRepository.savePoint(point);
 
         PointHistory history = PointHistory.builder()
-                .userId(point.getUserId())
+                .userId(userId)
                 .amount(amount)
                 .originType(command.getOriginType())
                 .build();

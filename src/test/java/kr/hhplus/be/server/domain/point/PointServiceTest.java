@@ -1,5 +1,10 @@
 package kr.hhplus.be.server.domain.point;
 
+import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.test.fixture.Fixtures;
+import kr.hhplus.be.server.test.fixture.point.PointHistoryScenario;
+import kr.hhplus.be.server.test.fixture.point.PointScenario;
+import kr.hhplus.be.server.test.fixture.user.UserScenario;
 import kr.hhplus.be.server.test.util.ObjectMother;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
