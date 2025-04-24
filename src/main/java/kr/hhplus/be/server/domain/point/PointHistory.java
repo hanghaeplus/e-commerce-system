@@ -22,34 +22,20 @@ public class PointHistory extends AuditableEntity {
     /**
      * 사용자 아이디
      */
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
 
     /**
-     * 사용 출처
+     * 출처 종류
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "origin_type", nullable = false)
+    @Column(name = "origin_type", nullable = false, updatable = false)
     private OriginType originType;
 
     /**
      * 금액
      */
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount", nullable = false, updatable = false)
     private Long amount;
-
-    // -------------------------------------------------------------------------------------------------
-
-    public enum OriginType {
-        /**
-         * 포인트 충전
-         */
-        CHARGE,
-
-        /**
-         * 주문 결제
-         */
-        PAYMENT,
-    }
 
 }

@@ -7,9 +7,9 @@ public interface PointRepository {
 
     Optional<Point> findPointByUserId(Long userId);
 
-    Point savePoint(Point point);
-
     List<PointHistory> findPointHistoriesByUserId(Long userId);
+
+    Point savePoint(Point point);
 
     PointHistory savePointHistory(PointHistory pointHistory);
 

@@ -18,8 +18,9 @@ public final class Fixtures {
                 .objectIntrospector(new FailoverIntrospector(List.of(
                         FieldReflectionArbitraryIntrospector.INSTANCE,
                         BuilderArbitraryIntrospector.INSTANCE
-                )))
+                ), false))
                 .defaultNotNull(true)
+                .enableLoggingFail(false)
                 .build();
     }
 

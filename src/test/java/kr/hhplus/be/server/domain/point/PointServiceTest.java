@@ -1,11 +1,9 @@
 package kr.hhplus.be.server.domain.point;
 
-import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.test.fixture.Fixtures;
-import kr.hhplus.be.server.test.fixture.point.PointHistoryScenario;
-import kr.hhplus.be.server.test.fixture.point.PointScenario;
-import kr.hhplus.be.server.test.fixture.user.UserScenario;
-import kr.hhplus.be.server.test.util.ObjectMother;
+import kr.hhplus.be.server.test.fixture.point.PointCommandDecreaseScenario;
+import kr.hhplus.be.server.test.fixture.point.PointCommandIncreaseScenario;
+import net.jqwik.api.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,11 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
 
 @MockitoSettings
@@ -40,21 +36,10 @@ class PointServiceTest {
         @Test
         void success() {
             // given
-            long balance = ObjectMother.getLong(0, 1_000_000);
-            Point givenPoint = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getUserId() > 0)
-                    .set("balance", balance)
-                    .build()
-                    .sample();
-
-            PointCommand.Increase command = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(PointCommand.Increase.class)
-                    .set("userId", givenPoint.getUserId())
-                    .set("originType", PointHistory.OriginType.CHARGE)
-                    .setPostCondition(it -> 1000 <= it.getAmount() && it.getAmount() <= 100_000)
-                    .build()
-                    .sample();
+            Tuple.Tuple2<PointCommand.Increase, Point> tuple = Fixtures.on(PointCommandIncreaseScenario.SUCCESS);
+            PointCommand.Increase command = tuple.get1();
+            Point givenPoint = tuple.get2();
+            Long balance = givenPoint.getBalance();
 
             given(pointRepository.findPointByUserId(command.getUserId()))
                     .willReturn(Optional.of(givenPoint));
@@ -65,21 +50,28 @@ class PointServiceTest {
             // then
             long expectedBalance = balance + command.getAmount();
 
+            // 포인트를 영속화해야 한다.
             ArgumentCaptor<Point> pointCaptor = ArgumentCaptor.forClass(Point.class);
             verify(pointRepository, times(1)).savePoint(pointCaptor.capture());
+
+            // 전달받은 값만큼 사용자의 포인트를 증가하여 영속화 레이어에 넘겨야 한다.
             assertThat(pointCaptor.getValue())
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)
                     .returns(expectedBalance, Point::getBalance);
 
+            // 포인트 이력을 영속화해야 한다.
             ArgumentCaptor<PointHistory> pointHistoryCaptor = ArgumentCaptor.forClass(PointHistory.class);
             verify(pointRepository, times(1)).savePointHistory(pointHistoryCaptor.capture());
+
+            // 전달받은 값 그대로 포인트 이력을 영속화 레이어에 넘겨야 한다.
             assertThat(pointHistoryCaptor.getValue())
                     .isNotNull()
                     .returns(command.getUserId(), PointHistory::getUserId)
                     .returns(command.getAmount(), PointHistory::getAmount)
-                    .returns(PointHistory.OriginType.CHARGE, PointHistory::getOriginType);
+                    .returns(OriginType.CHARGE, PointHistory::getOriginType);
 
+            // 반환한 포인트는 전달받은 값만큼 증가되어야 한다.
             assertThat(point)
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)
@@ -98,21 +90,10 @@ class PointServiceTest {
         @Test
         void success() {
             // given
-            long balance = ObjectMother.getLong(100_000, 1_000_000);
-            Point givenPoint = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(Point.class)
-                    .setPostCondition(it -> it.getUserId() > 0)
-                    .set("balance", balance)
-                    .build()
-                    .sample();
-
-            PointCommand.Decrease command = ObjectMother.getFixtureMonkey()
-                    .giveMeBuilder(PointCommand.Decrease.class)
-                    .set("userId", givenPoint.getUserId())
-                    .set("originType", PointHistory.OriginType.PAYMENT)
-                    .setPostCondition(it -> 1000 <= it.getAmount() && it.getAmount() <= 100_000)
-                    .build()
-                    .sample();
+            Tuple.Tuple2<PointCommand.Decrease, Point> tuple = Fixtures.on(PointCommandDecreaseScenario.SUCCESS);
+            PointCommand.Decrease command = tuple.get1();
+            Point givenPoint = tuple.get2();
+            Long balance = givenPoint.getBalance();
 
             given(pointRepository.findPointByUserId(command.getUserId()))
                     .willReturn(Optional.of(givenPoint));
@@ -123,21 +104,28 @@ class PointServiceTest {
             // then
             long expectedBalance = balance - command.getAmount();
 
+            // 포인트를 영속화해야 한다.
             ArgumentCaptor<Point> pointCaptor = ArgumentCaptor.forClass(Point.class);
             verify(pointRepository, times(1)).savePoint(pointCaptor.capture());
+
+            // 전달받은 값만큼 사용자의 포인트를 감소하여 영속화 레이어에 넘겨야 한다.
             assertThat(pointCaptor.getValue())
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)
                     .returns(expectedBalance, Point::getBalance);
 
+            // 포인트 이력을 영속화해야 한다.
             ArgumentCaptor<PointHistory> pointHistoryCaptor = ArgumentCaptor.forClass(PointHistory.class);
             verify(pointRepository, times(1)).savePointHistory(pointHistoryCaptor.capture());
+
+            // 전달받은 값 그대로 포인트 이력을 영속화 레이어에 넘겨야 한다.
             assertThat(pointHistoryCaptor.getValue())
                     .isNotNull()
                     .returns(command.getUserId(), PointHistory::getUserId)
                     .returns(command.getAmount(), PointHistory::getAmount)
-                    .returns(PointHistory.OriginType.PAYMENT, PointHistory::getOriginType);
+                    .returns(OriginType.PAYMENT, PointHistory::getOriginType);
 
+            // 반환한 포인트는 전달받은 값만큼 감소되어야 한다.
             assertThat(point)
                     .isNotNull()
                     .returns(command.getUserId(), Point::getUserId)

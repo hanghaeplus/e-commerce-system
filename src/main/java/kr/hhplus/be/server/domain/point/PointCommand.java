@@ -1,9 +1,11 @@
 package kr.hhplus.be.server.domain.point;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PointCommand {
+public class PointCommand {
 
     @Getter
     @Builder
@@ -12,7 +14,7 @@ public final class PointCommand {
 
         private final Long userId;
         private final Long amount;
-        private final PointHistory.OriginType originType;
+        private final OriginType originType;
 
     }
 
@@ -23,7 +25,7 @@ public final class PointCommand {
 
         private final Long userId;
         private final Long amount;
-        private final PointHistory.OriginType originType;
+        private final OriginType originType;
 
     }
 
