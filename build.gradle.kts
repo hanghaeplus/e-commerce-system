@@ -46,6 +46,9 @@ dependencies {
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
+    // Jetbrains Annotations
+    compileOnly(libs.jetbrains.annotations)
+
     // Immutables
     compileOnly(libs.immutables)
     annotationProcessor(libs.immutables)

@@ -3,6 +3,8 @@
 spring_boot = "3.4.1"
 spring_io_dependency_management = "1.1.7"
 
+jetbrains_annotations = "26.0.2"
+
 # JPA
 querydsl = "6.11"
 
@@ -20,6 +22,8 @@ spring_boot = { id = "org.springframework.boot", version.ref = "spring_boot" }
 spring_dependency_management = { id = "io.spring.dependency-management", version.ref = "spring_io_dependency_management" }
 
 [libraries]
+jetbrains_annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains_annotations" }
+
 # JPA
 querydsl_jpa = { group = "io.github.openfeign.querydsl", name = "querydsl-jpa", version.ref = "querydsl" }
 querydsl_apt = { group = "io.github.openfeign.querydsl", name = "querydsl-apt", version.ref = "querydsl" }
