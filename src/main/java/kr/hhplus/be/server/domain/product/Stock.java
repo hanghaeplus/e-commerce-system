@@ -28,7 +28,7 @@ public class Stock extends AuditableEntity {
      * 상품 옵션 아이디
      */
     @Column(name = "product_option_id", nullable = false, updatable = false, unique = true)
-    private Long productOptionId;
+    private Long optionId;
 
     /**
      * 재고 수량

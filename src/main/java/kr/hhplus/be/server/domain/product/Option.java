@@ -5,6 +5,7 @@ import kr.hhplus.be.server.common.exception.BusinessError;
 import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.common.AuditableEntity;
 import lombok.*;
+import org.hibernate.type.YesNoConverter;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,18 +40,46 @@ public class Option extends AuditableEntity {
     private String name;
 
     /**
-     * 가격
+     * 추가 가격
      */
-    @Column(name = "price", nullable = false)
-    private Integer price;
+    @Column(name = "additional_price", nullable = false)
+    private Integer additionalPrice;
+
+    /**
+     * 활성화 여부
+     */
+    @Getter(AccessLevel.NONE)
+    @Convert(converter = YesNoConverter.class)
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled;
 
     // -------------------------------------------------------------------------------------------------
+
+    /**
+     * 재고
+     */
+    @Transient
+    private Stock stock;
 
     /**
      * 태그 목록
      */
     @Transient
     private List<OptionTag> tags = Collections.emptyList();
+
+    // -------------------------------------------------------------------------------------------------
+
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public void disable() {
+        this.enabled = false;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled != null && this.enabled;
+    }
 
     public void addTag(OptionTag tag) {
         List<OptionTag> tags = Objects.requireNonNullElseGet(this.tags, Collections::emptyList);
