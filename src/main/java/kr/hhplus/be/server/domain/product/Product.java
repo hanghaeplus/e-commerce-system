@@ -63,7 +63,11 @@ public class Product extends AuditableEntity {
     }
 
     public boolean isEnabled() {
-        return this.enabled != null && this.enabled;
+        if (this.enabled == null) {
+            throw new BusinessException(BusinessError.COMMON_NO_INITIALIZED_ENTITY);
+        }
+
+        return this.enabled;
     }
 
     public void addOption(Option option) {

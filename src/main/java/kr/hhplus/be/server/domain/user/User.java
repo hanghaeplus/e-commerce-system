@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.BusinessError;
+import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.domain.common.AuditableEntity;
 import lombok.*;
 import org.hibernate.type.YesNoConverter;
@@ -35,8 +37,27 @@ public class User extends AuditableEntity {
     /**
      * 활성화 여부
      */
+    @Getter(AccessLevel.NONE)
     @Convert(converter = YesNoConverter.class)
     @Column(name = "enabled", nullable = false)
     private Boolean enabled;
+
+    // -------------------------------------------------------------------------------------------------
+
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public void disable() {
+        this.enabled = false;
+    }
+
+    public boolean isEnabled() {
+        if (this.enabled == null) {
+            throw new BusinessException(BusinessError.COMMON_NO_INITIALIZED_ENTITY);
+        }
+
+        return this.enabled;
+    }
 
 }
