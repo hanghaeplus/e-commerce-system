@@ -78,10 +78,10 @@ public class Product extends AuditableEntity {
         List<Option> those = new ArrayList<>(this.options);
         those.addAll(options);
 
-        Set<Long> set = new HashSet<>();
+        Set<Long> ids = new HashSet<>();
         for (Option that : those) {
             Long id = that.getId();
-            if (id != null && !set.add(id)) {
+            if (id != null && !ids.add(id)) {
                 throw new BusinessException(BusinessError.PRODUCT_DUPLICATED_OPTION);
             }
         }

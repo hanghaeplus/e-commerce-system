@@ -26,7 +26,7 @@ public class UserCoupon extends AuditableEntity {
     private Long id;
 
     /**
-     * 아이디
+     * 쿠폰 아이디
      */
     @Column(name = "coupon_id", nullable = false, updatable = false)
     private Long couponId;

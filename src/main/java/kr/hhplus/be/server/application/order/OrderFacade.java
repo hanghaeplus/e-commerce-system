@@ -38,7 +38,6 @@ public class OrderFacade {
 
         productService.decreaseStocks(requirement.toChangeStockCommands());
 
-
         List<OrderRequirement.Item> items = requirement.getItems();
         Map<Long, Integer> optionMap = items.stream()
                 .collect(toMap(OrderRequirement.Item::getOptionId, OrderRequirement.Item::getQuantity));
