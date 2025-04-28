@@ -9,19 +9,19 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(
-        name = "order_item",
+        name = "order_product",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"order_id", "product_option_id"})
         }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderItem extends AuditableEntity {
+public class OrderProduct extends AuditableEntity {
 
     /**
      * 아이디
      */
     @Id
-    @Column(name = "order_item_id", nullable = false, updatable = false)
+    @Column(name = "order_product_id", nullable = false, updatable = false)
     private Long id;
 
     /**

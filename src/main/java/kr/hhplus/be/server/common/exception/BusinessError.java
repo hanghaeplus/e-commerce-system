@@ -48,6 +48,9 @@ public enum BusinessError {
     COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST,
             "이미 사용한 쿠폰입니다."),
 
+    ORDER_DUPLICATED_COUPON(HttpStatus.BAD_REQUEST,
+            "하나의 주문에 동일한 쿠폰을 둘 이상 등록할 수 없습니다."),
+
     COMMON_NO_INITIALIZED_ENTITY(HttpStatus.INTERNAL_SERVER_ERROR,
             "엔터티가 초기화되지 않았습니다."),
     COMMON_NO_CONSISTENT_ENTITY(HttpStatus.INTERNAL_SERVER_ERROR,
