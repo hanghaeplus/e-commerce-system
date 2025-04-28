@@ -17,7 +17,7 @@ public enum UserScenario implements FixtureScenario<UserScenario, User> {
             return Fixtures.getFixtureMonkey()
                     .giveMeBuilder(User.class)
                     .set(javaGetter(User::getId), longs().greaterOrEqual(1))
-                    .set(javaGetter(User::getEnabled), true)
+                    .set(javaGetter(User::isEnabled), true)
                     .build()
                     .sample();
         }
@@ -27,7 +27,7 @@ public enum UserScenario implements FixtureScenario<UserScenario, User> {
             return Fixtures.getFixtureMonkey()
                     .giveMeBuilder(User.class)
                     .set(javaGetter(User::getId), longs().greaterOrEqual(1))
-                    .set(javaGetter(User::getEnabled), true)
+                    .set(javaGetter(User::isEnabled), true)
                     .build()
                     .list()
                     .ofMaxSize(maxSize)
