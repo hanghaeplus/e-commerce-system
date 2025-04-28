@@ -11,17 +11,17 @@ public enum OrderStatus implements CodeAware {
     /**
      * 결제대기
      */
-    PAYMENT_WAITING(100),
+    PAYMENT_WAITING(CodeAware.STEP),
 
     /**
      * 주문 완료
      */
-    COMPLETED(PAYMENT_WAITING.code + CodeAware.STEP),
+    COMPLETED(2 * CodeAware.STEP),
 
     /**
      * 주문 취소
      */
-    CANCELLED(COMPLETED.code + CodeAware.STEP),
+    CANCELLED(3 * CodeAware.STEP),
 
     ;
 
