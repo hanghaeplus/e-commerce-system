@@ -1,40 +1,40 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.common.CodeAware;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
+import kr.hhplus.be.server.configuration.jpa.converter.DiscountRuleConverter;
+import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
-public enum DiscountPolicy implements CodeAware {
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class DiscountPolicy {
 
     /**
-     * 정액 할인
+     * 할인 방법
      */
-    FIXED_AMOUNT(100),
+    @Convert(converter = DiscountRuleConverter.class)
+    @Column(name = "discount_rule", nullable = false)
+    private DiscountRule discountRule;
 
     /**
-     * 정률 할인
+     * 할인 금액
      */
-    FIXED_RATE(FIXED_AMOUNT.code + CodeAware.STEP),
+    @Column(name = "discount_amount", nullable = false)
+    private Integer discountAmount;
 
     /**
-     * 배송비 할인
+     * 최대 할인 가능 금액
      */
-    SHIPPING_FEE(FIXED_RATE.code + CodeAware.STEP),
+    @Column(name = "max_discount_amount")
+    private Integer maxDiscountAmount;
 
-    ;
+    // -------------------------------------------------------------------------------------------------
 
-    private final int code;
 
-    public static DiscountPolicy from(int code) {
-        for (DiscountPolicy policy : values()) {
-            if (policy.getCode() == code) {
-                return policy;
-            }
-        }
-
-        throw new IllegalArgumentException("Invalid code: " + code);
-    }
+    // -------------------------------------------------------------------------------------------------
 
 }

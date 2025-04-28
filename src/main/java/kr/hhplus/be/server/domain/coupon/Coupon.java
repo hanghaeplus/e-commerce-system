@@ -3,7 +3,6 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.BusinessError;
 import kr.hhplus.be.server.common.exception.BusinessException;
-import kr.hhplus.be.server.configuration.jpa.converter.DiscountPolicyConverter;
 import kr.hhplus.be.server.domain.common.AuditableEntity;
 import lombok.*;
 import org.hibernate.type.YesNoConverter;
@@ -66,8 +65,7 @@ public class Coupon extends AuditableEntity {
     /**
      * 할인 정책
      */
-    @Convert(converter = DiscountPolicyConverter.class)
-    @Column(name = "discount_policy", nullable = false)
+    @Embedded
     private DiscountPolicy discountPolicy;
 
     // -------------------------------------------------------------------------------------------------
