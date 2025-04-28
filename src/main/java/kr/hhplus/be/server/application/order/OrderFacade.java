@@ -2,8 +2,10 @@ package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.point.OriginType;
+import kr.hhplus.be.server.domain.point.PointCommand;
 import kr.hhplus.be.server.domain.point.PointService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductService;
@@ -53,7 +55,18 @@ public class OrderFacade {
                 .sum();
 
         // TODO: 쿠폰 할인된 최종 금액이랑 비교 + 0원일 때를 상정하여 분기.
-        Point point = pointService.getPoint(requirement.getUserId());
+        PointCommand.Decrease decreasePointCommand = PointCommand.Decrease.builder()
+                .userId(requirement.getUserId())
+                .amount(10000L)
+                .originType(OriginType.PAYMENT)
+                .build();
+        pointService.decrease(decreasePointCommand);
+
+        OrderCommand.Place placeOrderCommand = OrderCommand.Place.builder()
+                .userId(requirement.getUserId())
+                .userCouponIds(requirement.getUserCouponIds())
+                .build();
+        orderService.placeOrder(placeOrderCommand);
     }
 
 }

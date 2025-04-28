@@ -5,7 +5,6 @@ import kr.hhplus.be.server.common.exception.BusinessError;
 import kr.hhplus.be.server.common.exception.BusinessException;
 import kr.hhplus.be.server.configuration.jpa.converter.OrderStatusConverter;
 import kr.hhplus.be.server.domain.common.AuditableEntity;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -48,6 +47,12 @@ public class Order extends AuditableEntity {
     // -------------------------------------------------------------------------------------------------
 
     /**
+     * 주문 상품
+     */
+    @Transient
+    private List<OrderProduct> products = Collections.emptyList();
+
+    /**
      * 주문에 사용한 쿠폰
      */
     @Transient
@@ -55,24 +60,16 @@ public class Order extends AuditableEntity {
 
     // -------------------------------------------------------------------------------------------------
 
-    public void addCoupon(UserCoupon userCoupon) {
-        addCoupons(List.of(userCoupon));
+    public void addCoupon(OrderCoupon orderCoupon) {
+        addCoupons(List.of(orderCoupon));
     }
 
-    public void addCoupons(List<UserCoupon> userCoupons) {
+    public void addCoupons(List<OrderCoupon> orderCoupons) {
         List<OrderCoupon> those = new ArrayList<>(this.coupons);
-        List<OrderCoupon> coupons = userCoupons.stream()
-                .map(coupon -> OrderCoupon.builder()
-                        .orderId(this.id)
-                        .userCouponId(coupon.getId())
-                        .build()
-                )
-                .toList();
-
-        those.addAll(coupons);
+        those.addAll(orderCoupons);
 
         Set<Long> ids = new HashSet<>();
-        Set<Long> userCouponIds = new HashSet<>();
+        Set<Long> orderIds = new HashSet<>();
 
         for (OrderCoupon that : those) {
             Long id = that.getId();
@@ -80,8 +77,8 @@ public class Order extends AuditableEntity {
                 throw new BusinessException(BusinessError.ORDER_DUPLICATED_COUPON);
             }
 
-            Long userCouponId = that.getUserCouponId();
-            if (!userCouponIds.add(userCouponId)) {
+            Long orderId = that.getOrderId();
+            if (!orderIds.add(orderId)) {
                 throw new BusinessException(BusinessError.ORDER_DUPLICATED_COUPON);
             }
         }
