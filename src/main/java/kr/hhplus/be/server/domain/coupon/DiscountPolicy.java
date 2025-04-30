@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import kr.hhplus.be.server.configuration.jpa.converter.DiscountRuleConverter;
+import kr.hhplus.be.server.configuration.jpa.converter.DiscountTargetConverter;
 import lombok.*;
 
 @Getter
@@ -12,6 +13,8 @@ import lombok.*;
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DiscountPolicy {
+
+    // -------------------------------------------------------------------------------------------------
 
     /**
      * 할인 방법
@@ -34,7 +37,15 @@ public class DiscountPolicy {
 
     // -------------------------------------------------------------------------------------------------
 
+    /**
+     * 할인 대상
+     */
+    @Convert(converter = DiscountTargetConverter.class)
+    @Column(name = "discount_target", nullable = false)
+    private DiscountTarget discountTarget;
 
     // -------------------------------------------------------------------------------------------------
+
+    // TODO: DiscountCondition + DSL Tree structure (AND/OR composition)
 
 }

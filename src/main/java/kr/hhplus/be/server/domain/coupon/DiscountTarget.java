@@ -9,19 +9,29 @@ import lombok.RequiredArgsConstructor;
 public enum DiscountTarget implements CodeAware {
 
     /**
-     * 정액 할인
+     * 장바구니
      */
-    FIXED_AMOUNT(CodeAware.STEP),
+    CART(CodeAware.STEP),
 
     /**
-     * 정률 할인
+     * 분류
      */
-    FIXED_RATE(2 * CodeAware.STEP),
+    CATEGORY(2 * CodeAware.STEP),
 
     /**
-     * 배송비 할인
+     * 브랜드
      */
-    SHIPPING_FEE(3 * CodeAware.STEP),
+    BRAND(3 * CodeAware.STEP),
+
+    /**
+     * 특정 상품
+     */
+    PRODUCT(4 * CodeAware.STEP),
+
+    /**
+     * 배송비
+     */
+    SHIPPING_FEE(5 * CodeAware.STEP),
 
     ;
 
