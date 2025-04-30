@@ -74,10 +74,10 @@ public class ProductService {
             throw new BusinessException(BusinessError.STOCK_NOT_FOUND);
         }
 
-        Map<Long, Integer> optionMap = commands.stream()
+        Map<Long, Integer> optionIdToAmount = commands.stream()
                 .collect(toMap(ProductCommand.ChangeStock::getOptionId, ProductCommand.ChangeStock::getAmount));
         for (Stock stock : stocks) {
-            Integer amount = optionMap.get(stock.getOptionId());
+            Integer amount = optionIdToAmount.get(stock.getOptionId());
             stock.increase(amount);
         }
 
@@ -96,10 +96,10 @@ public class ProductService {
             throw new BusinessException(BusinessError.STOCK_NOT_FOUND);
         }
 
-        Map<Long, Integer> optionMap = commands.stream()
+        Map<Long, Integer> optionIdToAmount = commands.stream()
                 .collect(toMap(ProductCommand.ChangeStock::getOptionId, ProductCommand.ChangeStock::getAmount));
         for (Stock stock : stocks) {
-            Integer amount = optionMap.get(stock.getOptionId());
+            Integer amount = optionIdToAmount.get(stock.getOptionId());
             stock.decrease(amount);
         }
 
